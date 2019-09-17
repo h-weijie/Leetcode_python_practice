@@ -1,27 +1,30 @@
 class Solution:
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
-        r = []
-        i = j = 0
-        l1 = len(nums1)
-        l2 = len(nums2)
-        while i < l1 and j < l2:
-            if nums1[i] < nums2[j]:
-                r.append(nums1[i])
-                i += 1
+        m = len(nums1)
+        n = len(nums2)
+        if m > n:
+            nums1,nums2,m,n = nums2,nums1,n,m
+        imin,imax = 0,m
+        while imin<=imax:
+            i = (imin+imax)//2
+            j = (m+n+1)//2 - i
+            if i>0 and nums1[i-1]>nums2[j] :
+                imax=i-1
+            elif i<m and nums2[j-1]>nums1[i] :
+                imin=i+1
             else:
-                r.append(nums2[j])
-                j += 1
-        if i < l1:
-            while i < l1:
-                r.append(nums1[i])
-                i += 1
-        else:
-            while j < l2:
-                r.append(nums2[j])
-                j += 1
-        l = len(r)
-        m = l // 2 
-        if l % 2:
-            return r[m]          
-        else:
-            return (r[m - 1] + r[m])/2
+                if i==0:
+                    max_left = nums2[j-1]
+                elif j==0:
+                    max_left = nums1[i-1]
+                else:
+                    max_left = max(nums1[i-1],nums2[j-1])
+                if (m+n)%2:
+                    return max_left
+                if i==m:
+                    min_right = nums2[j]
+                elif j==n:
+                    min_right = nums1[i]
+                else:
+                    min_right = min(nums1[i],nums2[j])
+                return (max_left+ min_right)/2
